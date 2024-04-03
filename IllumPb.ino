@@ -29,12 +29,17 @@ void loop()
 void ShowLED()
     {
     if ( OnOffPeriodCnt < 1000 )
-        { //ON
-        if ( OnOffTimCntr < 1 ) digitalWrite(LEDSWPIN, 1);
+        { //Off
+        if ( OnOffTimCntr < 1 )
+            {
+            digitalWrite(LEDSWPIN, 1);
+            delayMicroseconds(100);
+            digitalWrite(LEDSWPIN, 0);
+            }
         else digitalWrite(LEDSWPIN, 0);
         }
     else
-        {  //OFF
+        {  //On
         if ( OnOffTimCntr < 99 ) digitalWrite(LEDSWPIN, 1);
         else digitalWrite(LEDSWPIN, 0);
         }
