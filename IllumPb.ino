@@ -6,42 +6,66 @@
 constexpr auto LEDSWPIN = 2;
 int OnOffTimCntr = 0;
 int OnOffPeriodCnt = 0;
-unsigned long Timenow;
-
+unsigned long Timenowms;
+boolean PbPressed, PbWasPressed;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
     pinMode(LEDSWPIN, OUTPUT);
-    Timenow = millis();
+    Timenowms = millis();
+    Serial.begin(9600);
 }
+
+void readPb()
+    {
+    pinMode(LEDSWPIN, INPUT);
+    delayMicroseconds(1);
+    if ( digitalRead(LEDSWPIN) == 1 ) PbPressed = true; else PbPressed = false;
+    pinMode(LEDSWPIN, OUTPUT);
+    }
+
+void checkChange()
+    {
+    if ( PbPressed && !PbWasPressed ) Serial.println("PRESSED");
+
+    if ( !PbPressed && PbWasPressed ) Serial.println("NOT PRESSED");
+
+    PbWasPressed = PbPressed;
+    }
 
 // the loop function runs over and over again until power down or reset
 void loop()
     {
-    if ( millis() > Timenow )
+    if ( millis() > Timenowms )
         {
         OnOffTimCntr += 1; if ( OnOffTimCntr > 100 ) OnOffTimCntr = 0;
-        OnOffPeriodCnt += 1; if ( OnOffPeriodCnt > 2000 ) OnOffPeriodCnt = 0;
+        OnOffPeriodCnt += 1; if ( OnOffPeriodCnt > 4000 ) OnOffPeriodCnt = 0;
+        checkChange();
         ShowLED();
-        Timenow = millis();
+        Timenowms = millis();
         }    
 }
 void ShowLED()
     {
-    if ( OnOffPeriodCnt < 1000 )
+    if ( OnOffPeriodCnt < 2000 )
         { //Off
         if ( OnOffTimCntr < 1 )
             {
             digitalWrite(LEDSWPIN, 1);
-            delayMicroseconds(100);
+            delayMicroseconds(50);
+            readPb();
             digitalWrite(LEDSWPIN, 0);
             }
         else digitalWrite(LEDSWPIN, 0);
         }
     else
         {  //On
-        if ( OnOffTimCntr < 99 ) digitalWrite(LEDSWPIN, 1);
-        else digitalWrite(LEDSWPIN, 0);
+        if ( OnOffTimCntr < 100 ) digitalWrite(LEDSWPIN, 1);
+        else
+            {
+            readPb();
+            digitalWrite(LEDSWPIN, 0);
+            }
         }
 
     }
