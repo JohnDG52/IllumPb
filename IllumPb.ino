@@ -1,71 +1,37 @@
 /*
  Name:		IllumPb.ino
  Created:	4/2/2024 2:53:18 PM
- Author:	johnd
+ Author:	John D Glover
 */
-constexpr auto LEDSWPIN = 2;
-int OnOffTimCntr = 0;
-int OnOffPeriodCnt = 0;
-unsigned long Timenowms;
-boolean PbPressed, PbWasPressed;
+
+#include "LpSw.h"
+
+LpSw lpsw;
+#include "LpSwTestStuff.h"
 
 // the setup function runs once when you press reset or power the board
-void setup() {
-    pinMode(LEDSWPIN, OUTPUT);
-    Timenowms = millis();
-    Serial.begin(9600);
-}
-
-void readPb()
+void setup()
     {
-    pinMode(LEDSWPIN, INPUT);
-    delayMicroseconds(1);
-    if ( digitalRead(LEDSWPIN) == 1 ) PbPressed = true; else PbPressed = false;
-    pinMode(LEDSWPIN, OUTPUT);
+    tstSetup();
     }
 
-void checkChange()
-    {
-    if ( PbPressed && !PbWasPressed ) Serial.println("PRESSED");
-
-    if ( !PbPressed && PbWasPressed ) Serial.println("NOT PRESSED");
-
-    PbWasPressed = PbPressed;
-    }
 
 // the loop function runs over and over again until power down or reset
 void loop()
     {
-    if ( millis() > Timenowms )
-        {
-        OnOffTimCntr += 1; if ( OnOffTimCntr > 100 ) OnOffTimCntr = 0;
-        OnOffPeriodCnt += 1; if ( OnOffPeriodCnt > 4000 ) OnOffPeriodCnt = 0;
-        checkChange();
-        ShowLED();
-        Timenowms = millis();
-        }    
-}
-void ShowLED()
-    {
-    if ( OnOffPeriodCnt < 2000 )
-        { //Off
-        if ( OnOffTimCntr < 1 )
+    // This section used blue LED to show the state of the switch currently being tested -----------------------
+   if ( tstcheckInterval(10))
+       {
+    if ( lpsw.switchIsOn(0) )
             {
-            digitalWrite(LEDSWPIN, 1);
-            delayMicroseconds(50);
-            readPb();
-            digitalWrite(LEDSWPIN, 0);
+            tstSweepup();
             }
-        else digitalWrite(LEDSWPIN, 0);
-        }
     else
-        {  //On
-        if ( OnOffTimCntr < 100 ) digitalWrite(LEDSWPIN, 1);
-        else
-            {
-            readPb();
-            digitalWrite(LEDSWPIN, 0);
-            }
-        }
-
+        tstSweepdown();
     }
+   // ----------------------------------------------------------------------------------------------------------
+   //tstIndeLEDJob(); // Only for independent mode
+   lpsw.scanLpSw();
+
+}
+
