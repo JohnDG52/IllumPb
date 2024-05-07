@@ -23,7 +23,10 @@ void tstSetup()
     {
     analogWrite(tstLEDPin, tstOpmin);
     pinMode(tstLEDPin, OUTPUT);
-    lpsw.addLpSw(0, DIOLpSw1, modeLat);
+    lpsw.addLpSw(0, DIOLpSw1, modeIndep);
+    lpsw.addLpSw(1, DIOLpSw2, modeLat);
+    lpsw.addLpSw(2, DIOLpSw3, modeMom);
+    lpsw.forceLp(0, ON);
     }
 
 void tstSweepup()
@@ -55,29 +58,7 @@ boolean tstcheckInterval(int ms) // Returns true every ms milliseconds
     return rval;
     }
 
-
-
-const int ID = 0; // Set to ID number of independent Lp/Sw pair
-
-void tstIndeLEDJob()
-    {
-    static unsigned long lastTime = 0;
-    static int counter = 0;
-
-    if ( millis() > lastTime )
-        {
-        lastTime = millis();
-        counter++;
-        if ( counter < 1500 )
-            {
-            lpsw.forceLp(ID, OFF);
-            }
-        else
-            {
-            lpsw.forceLp(ID, ON);
-            }
-        if ( counter > 2500 ) counter = 0;
-        }
-    }
 #endif
+
+
 

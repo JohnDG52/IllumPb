@@ -111,6 +111,7 @@ boolean LpSw::_readSw(stLpSw* Ptr,boolean leaveLEDon)
     digitalWrite(Ptr->DIOPin, 1);
     pinMode(Ptr->DIOPin, OUTPUT);
     pinMode(Ptr->DIOPin, INPUT);
+    _nop++;
     r = (digitalRead(Ptr->DIOPin)==1);
     digitalWrite(Ptr->DIOPin, leaveLEDon);
     pinMode(Ptr->DIOPin, OUTPUT);

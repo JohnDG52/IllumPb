@@ -15,7 +15,7 @@
 
 // THIS SECTION MUST BE SET UP BEFORE USE -------------------------------------------------
 
-const int numLpSws= 1;  // Number of LP/Sw pairs used
+const int numLpSws= 3;  // Number of LP/Sw pairs used
 
 // DIO lines used for each of the LED / pushbutton pairs
 const int DIOLpSw1= 2;
@@ -63,6 +63,7 @@ class LpSw
         private:
         boolean _readSw(stLpSw* Ptr,boolean leaveLEDon);
         unsigned long _lastTimems;
+        volatile long _nop;
         stLpSw _LpSwArray[numLpSws];
         void _scanLpSw(uint8_t ID);
 
