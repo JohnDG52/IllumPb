@@ -1,0 +1,1 @@
+The files (illumpb.ino, lpsw.cpp and .h, and lpswteststuff.h) contain a class to enable an Uno or Nano to use a single I/O pin to both control an LED and input from a switch or pushbutton, and an example with three LP/PB pairs, on with LED and PB independent, one with momentary PB with indicator and one as toggle with indicator.
